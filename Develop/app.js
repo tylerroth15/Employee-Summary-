@@ -44,7 +44,8 @@ const render = require("./lib/htmlRenderer");
 //     function createManager(){
 //         console.log("Please Build Your Team Here")
 //         inquirer.prompt([
-//             {
+//             {insert name, role, employee id and email and push 
+                
 
 //             }
 //         ])
