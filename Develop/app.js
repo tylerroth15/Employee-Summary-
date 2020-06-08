@@ -11,7 +11,6 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 
 
-
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 
@@ -35,19 +34,117 @@ const render = require("./lib/htmlRenderer");
 // object with the correct structure and methods. This structure will be crucial in order
 // for the provided `render` function to work! ```
 
-// From Demo
-// const teamMembers = [];
-// const idArray = [];
 
-// fucnction appMenu(){
 
-//     function createManager(){
-//         console.log("Please Build Your Team Here")
-//         inquirer.prompt([
-//             {insert name, role, employee id and email and push 
-                
+const renderTeam = employeeInfoArray =>{
+    fs.writeFile(outputPath, render(employeeInfoArray), () => {});
+}
 
-//             }
-//         ])
-//     }
-// }
+const teamInfo = () =>{
+
+    // Manager Information Prompt
+
+    const promptManagerInfo = (name, id, email) =>{
+        inquirer.prompt({
+            type: "Number",
+            message: "What is the Manager's Office Number?",
+            name: "officeNumber",
+                }).then (({officeNumber}) => {
+            employeeInfoArray.push(new Manager(name, id, email, officeNumber));
+            inquirer.prompt({
+                type: "confirm", 
+                message: "Would you like to add additional eployees?",
+                name: "addEmployee"
+            }).then(({ addEmployee})=>{
+                if (addEmployee){
+                    promptEmployeeInfo();
+                } else {
+                    renderTeam(employeeInfoArray);
+                }
+        })
+        })
+    };
+
+    // Engineer Information Prompt
+
+    const promptEngineerInfo = (name, id, email)=> {
+        inquirer.prompt({
+            type: "input",
+            message: "Enter Engineer's GitHub Username.",
+            name: "github"
+        }).then(({github})=>{
+            employeeInfoArray.push(new Engineer(name, id, email, github));
+            inquirer.prompt({
+                type: "confirm", 
+                message: "Would you like to add additional eployees?",
+                name: "addEmployee"
+            }).then(({ addEmployee})=>{
+                if (addEmployee){
+                    promptEmployeeInfo();
+                } else {
+                    renderTeam(employeeInfoArray);
+                }
+            })
+        })
+    };
+
+    //  Intern Information Prompt
+
+    const promptInternInfo = (name, id, email) => {
+        inquirer.prompt({
+            type: "input",
+            message: "Please enter the Intern's School?",
+            name: "school"
+        }).then(({school})=>{
+            employeeInfoArray.push(new Intern(name, id, email, school));
+            inquirer.prompt({
+                type: "confirm",
+                message: "Continue to add another employee", 
+                name: "addNextEmployee"
+            }).then (({ addNextEmployee})=>{
+                if (addNextEmployee){
+                    promptEmployeeInfo();
+                } else {
+                    renderTeam (employeeInfoArray);
+                }
+            })
+        })
+    };
+
+    // Employee Information Prompt
+    const promptEmployeeInfo = (name, id, email) =>{
+        inquirer.prompt ([{
+            type: "input",
+            message: "Please enter the employee's name.",
+            name: "name"
+        },{
+            type: "number",
+            message: "Please enter the employee's ID number.",
+            name: "id",
+        },{
+            type: "input",
+            message: "Please enter the employee's email address.",
+            name: "name"
+        },{
+            type: "list",
+            choices: ["Intern", "Engineer", "Manager"],
+            name: "role"
+        }]).then(({ name, id, email, role}, error)=>{
+            switch (role){
+                case "Intern":
+                promptInternInfo(name, id, email);
+                break;
+                case "Engineer":
+                promptEngineerInfo(name, id, email);
+                break;
+                case "Manager":
+                promptManagerInfo(name, id, email);
+                break;
+            }
+        })
+    };
+
+    const employeeInfoArray = [];
+
+    promptEmployeeInfo();
+}
