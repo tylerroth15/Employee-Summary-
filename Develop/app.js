@@ -5,7 +5,7 @@ const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
 
-const OUTPUT_DIR = path.resolve(__dirname, "output");
+const OUTPUT_DIR = path.resolve(__dirname, "./output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
@@ -38,6 +38,8 @@ const render = require("./lib/htmlRenderer");
 
 const renderTeam = employeeInfoArray =>{
     fs.writeFile(outputPath, render(employeeInfoArray), () => {});
+    console.log(employeeInfoArray);
+    
 }
 
 const teamInfo = () =>{
@@ -53,7 +55,7 @@ const teamInfo = () =>{
             employeeInfoArray.push(new Manager(name, id, email, officeNumber));
             inquirer.prompt({
                 type: "confirm", 
-                message: "Would you like to add additional eployees?",
+                message: "Would you like to add additional employees?",
                 name: "addEmployee"
             }).then(({ addEmployee})=>{
                 if (addEmployee){
@@ -76,7 +78,7 @@ const teamInfo = () =>{
             employeeInfoArray.push(new Engineer(name, id, email, github));
             inquirer.prompt({
                 type: "confirm", 
-                message: "Would you like to add additional eployees?",
+                message: "Would you like to add additional employees?",
                 name: "addEmployee"
             }).then(({ addEmployee})=>{
                 if (addEmployee){
@@ -112,7 +114,7 @@ const teamInfo = () =>{
     };
 
     // Employee Information Prompt
-    const promptEmployeeInfo = (name, id, email) =>{
+    const promptEmployeeInfo = () =>{
         inquirer.prompt ([{
             type: "input",
             message: "Please enter the employee's name.",
@@ -124,7 +126,7 @@ const teamInfo = () =>{
         },{
             type: "input",
             message: "Please enter the employee's email address.",
-            name: "name"
+            name: "email"
         },{
             type: "list",
             choices: ["Intern", "Engineer", "Manager"],
@@ -148,3 +150,5 @@ const teamInfo = () =>{
 
     promptEmployeeInfo();
 }
+
+teamInfo();
